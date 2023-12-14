@@ -13,13 +13,7 @@ public:
                 onecol[j] += grid[i][j];
             }
         }
-        for(int i:onerow)
-            cout << i << " ";
-        cout << endl;
-        for(int i:onecol)
-            cout << i << " ";
-        cout << endl;
-        cout << "hi" << endl;
+        
         vector<vector<int>> ans(row, vector<int>(col,0));
         for(int i=0; i<row; i++) {
             for(int j=0; j<col; j++) {
