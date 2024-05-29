@@ -35,7 +35,7 @@ public:
                 steps += count;
                 s = s.substr(0, len-count);
             }
-            cout << s << endl;
+            //cout << s << endl;
         }
         return steps;
     }
