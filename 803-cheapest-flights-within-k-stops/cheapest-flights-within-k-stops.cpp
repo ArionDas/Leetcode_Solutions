@@ -1,45 +1,42 @@
 class Solution {
 public:
 	int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
-		map<int,int>m;
-		vector<vector<pair<int,int>>>v(n);
-		for(int i=0;i<flights.size();i++)
-		{
-			v[flights[i][0]].push_back({flights[i][1],flights[i][2]});
-		}
-		k=k+1;
-		for(int i=0;i<n;i++)
-		{
-			m[i]=INT_MAX;
-		}
-		m[src]=0;
-		queue<pair<int,int>>q;
-		q.push({src,0});
-		int i=0;
-		while(!q.empty() && i<k)
-		{
-			int j=q.size();
-			for(int t=0;t<j;t++)
-			{
-				auto x=q.front();
-				q.pop();
-				int a=x.first;
-				int b=x.second;
-				for(auto it:v[a])
-				{
-					if(b+it.second<m[it.first])
-					{
-						m[it.first]=b+it.second;
-						q.push({it.first,b+it.second});
-					}
-				}
-			}
-			i++;
-		}
-		if(m[dst]==INT_MAX)
-		{
-			return -1;
-		}
-		return m[dst];
+		vector<pair<int,int>> adj[n];
+
+        for(auto it : flights) {
+            adj[it[0]].push_back({it[1], it[2]});
+        }
+
+        queue<pair<int, pair<int,int>>> q;
+        q.push({0, {src, 0}});
+
+        vector<int> dist(n, 1e9);
+        dist[src] = 0;
+
+        while(!q.empty()) {
+            auto it = q.front();
+            q.pop();
+
+            int stops = it.first;
+            int node = it.second.first;
+            int cost = it.second.second;
+
+            if(stops > k) {
+                continue;
+            }
+            for(auto it:adj[node]) {
+                int adjNode = it.first;
+                int edW = it.second;
+
+                if(cost + edW < dist[adjNode] && stops <= k) {
+                    dist[adjNode] = cost + edW;
+                    q.push({stops+1, {adjNode, cost + edW}});
+                }
+            }
+        }
+
+        if(dist[dst] == 1e9)
+            return -1;
+        return dist[dst];
 	}
 };
