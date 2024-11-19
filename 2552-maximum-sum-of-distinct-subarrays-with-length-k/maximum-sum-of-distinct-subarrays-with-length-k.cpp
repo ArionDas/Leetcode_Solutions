@@ -25,7 +25,7 @@ public:
                     um.erase(nums[low]);
                 low += 1;
             }
-            cout << ans << endl;
+            //cout << ans << endl;
             high += 1;
         }
 
