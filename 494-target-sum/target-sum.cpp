@@ -1,42 +1,27 @@
 class Solution {
 public:
 
-    int findWays(vector<int> &num, int tar){
-     int n = num.size();
-
-    vector<int> prev(tar+1,0);
-    
-    if(num[0] == 0) prev[0] =2;  // 2 cases -pick and not pick
-    else prev[0] = 1;  // 1 case - not pick
-    
-    if(num[0]!=0 && num[0]<=tar) prev[num[0]] = 1;  // 1 case -pick
-    
-    for(int ind = 1; ind<n; ind++){
-        vector<int> cur(tar+1,0);
-        for(int target= 0; target<=tar; target++){
-            int notTaken = prev[target];
-    
-            int taken = 0;
-                if(num[ind]<=target)
-                    taken = prev[target-num[ind]];
-        
-            cur[target]= (notTaken + taken);
+    int find_target_sum(int ind, int n, int sum, vector<int> &nums, int target, vector<vector<int>> &dp) {
+        if(ind == n) {
+            if(sum == target) {
+                return dp[ind][sum+1000] = 1;
+            }
+            return 0;
         }
-        prev = cur;
-    }
-    return prev[tar];
-}
 
+        if(dp[ind][sum+1000] != -1) {
+            return dp[ind][sum+1000];
+        }
+
+        return dp[ind][sum+1000] = find_target_sum(ind+1, n, sum+nums[ind], nums, target, dp) + find_target_sum(ind+1, n, sum-nums[ind], nums, target, dp);
+    }
 
     int findTargetSumWays(vector<int>& nums, int target) {
-        int totalsum = 0;
-        int len = nums.size();
-        for(int i=0; i<len; i++) {
-            totalsum += nums[i];
-        }
+        int n = nums.size();
+        vector<vector<int>> dp(n+1, vector<int>(2002, -1));
 
-        if(totalsum-target < 0 || (totalsum-target)%2) return 0;
+        int ans = find_target_sum(0, n, 0, nums, target, dp);
 
-        return findWays(nums, (totalsum-target)/2);
+        return ans;
     }
 };
