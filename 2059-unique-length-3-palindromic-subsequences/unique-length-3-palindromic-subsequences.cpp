@@ -1,30 +1,33 @@
 class Solution {
 public:
     int countPalindromicSubsequence(string s) {
-        
-        char c[26] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-        int a=0, t=0;
+        int n = s.size();
+        unordered_map<int,int> um;
+        vector<int> st(26,-1);
+        vector<int> en(26,-1);
 
-        int l,r;
-
-        for(char x:c) {
-            for(l=0; l<s.length() && s[l]!=x; l++);
-            if(l==s.length()) continue;
-
-            for(r=s.length()-1; r>=0 && s[r]!=x; r--);
-            if(l>=r) continue;
-
-            vector<bool> v(128, false);
-            t = 0;
-            for(int i=l+1; i<r; i++) {
-                if(!v[s[i]]) {
-                    v[s[i]] = true;
-                    t += 1;
-                    if(t==26) break;
-                }
-            }
-            a += t;
+        for(int i=0; i<n; i++) {
+            if(um.find(s[i])==um.end())
+                st[s[i]-'a'] = i;
+            
+            um[s[i]] += 1;
+            en[s[i]-'a'] = i;
         }
-        return a;
+
+        int ans = 0;
+
+        for(int i=0; i<26; i++) {
+            char ch = 'a' + i;
+            if(en[i] != -1) {
+                unordered_set<int> us;
+                for(int j=st[i]+1; j<en[i]; j++) {
+                    us.insert(s[j]);
+                }
+                ans += (us.size());
+                cout << ans << endl;
+            }
+        }
+
+        return ans;
     }
 };
