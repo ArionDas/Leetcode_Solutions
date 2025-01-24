@@ -1,40 +1,35 @@
 class Solution {
 public:
-
-    vector<int> eventualSafeNodes(vector<vector<int>>& adj) {
-        int V = adj.size();
-        vector<int> safe_nodes;
-
-        vector<int> indg(V, 0);
-        vector<vector<int>> reverse_edges(V);
-        for(int i=0; i<V; i++) {
-            for(auto it:adj[i]) {
-                indg[i]++;
-                reverse_edges[it].push_back(i);
+    bool dfs(int node, vector<vector<int>>& adj, vector<bool>& visit,
+             vector<bool>& inStack) {
+        if (inStack[node]) {
+            return true;
+        }
+        if (visit[node]) {
+            return false;
+        }
+        visit[node] = true;
+        inStack[node] = true;
+        for (auto neighbor : adj[node]) {
+            if (dfs(neighbor, adj, visit, inStack)) {
+                return true;
             }
         }
-
-        queue<int> q;
-        for(int i=0; i<V; i++) {
-            if(indg[i]==0)
-                q.push(i);
+        inStack[node] = false;
+        return false;
+    }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<bool> visit(n), inStack(n);
+        for (int i = 0; i < n; i++) {
+            dfs(i, graph, visit, inStack);
         }
-
-        vector<int> topo;
-        while(!q.empty()) {
-            int node = q.front();
-            q.pop();
-
-            topo.push_back(node);
-
-            for(auto it:reverse_edges[node]) {
-                indg[it]--;
-                if(indg[it]==0)
-                    q.push(it);
+        vector<int> safeNodes;
+        for (int i = 0; i < n; i++) {
+            if (!inStack[i]) {
+                safeNodes.push_back(i);
             }
         }
-
-        sort(topo.begin(), topo.end());
-        return topo;
+        return safeNodes;
     }
 };
